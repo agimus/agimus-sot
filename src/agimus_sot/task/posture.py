@@ -44,7 +44,7 @@ class Posture(Task):
         self._task.dyn = sotrobot.dynamic
         self._feature = FeaturePosture(n + '_feature_')
 
-        q = sotrobot.device.state.value
+        q = sotrobot.integrator.signal('configuration').value
         self._feature.state.value = q
         self._feature.posture.value = q
 
@@ -54,7 +54,7 @@ class Posture(Task):
         self._task.add(self._feature.name)
 
         # Connects the dynamics to the current feature of the posture task
-        plug(sotrobot.dynamic.position, self._feature.state)
+        plug(sotrobot.integrator.signal("configuration"), self._feature.state)
 
         self._task.setWithDerivative (withDerivative)
 

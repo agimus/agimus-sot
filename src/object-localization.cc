@@ -59,7 +59,7 @@ void ObjectLocalization::addCommands()
     "      Input: boolean\n"
     "    \n"
     "        If true the pose of the object in the world frame will be updated\n"
-    "        continuously as long as signal cMoMeasured is available.\n";
+    "        continuously as long as signal cMoMeasured is available.\n"
     "        If false the pose of the object in the world frame is updated only\n"
     "        when calling command trigger.\n";
   addCommand("setVisualServoingMode", makeCommandVoid1(*this, &ObjectLocalization::setVisualServoingMode,

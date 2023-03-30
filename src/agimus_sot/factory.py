@@ -488,7 +488,7 @@ class Factory(GraphFactoryAbstract):
             self.tracers[tracer.name] = tracer
             tracer.setBufferSize (size)
             tracer.open (dir, prefix, suffix)
-            self.sotrobot.device.after.addSignal(name + ".triger")
+            self.sotrobot.integrator.after.addSignal(name + ".triger")
             return tracer
         # init tracers
         if self.parameters["addTimerToSotControl"] or self.parameters["addTracerToSotControl"]:
