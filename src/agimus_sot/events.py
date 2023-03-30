@@ -73,7 +73,7 @@ class Events:
         self.event = Event (name + "_event")
         self.event.repeat(5000)
         plug (self.switch.sout, self.event.condition)
-        robot.device.after.addSignal (name + "_event.check")
+        robot.integrator.after.addSignal (name + "_event.check")
 
         self.ros_publish = RosPublish (name + '_ros_publish')
         # self.ros_publish.add ('boolean', name, '/agimus/sot/event/' + name)

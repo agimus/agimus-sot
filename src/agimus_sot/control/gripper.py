@@ -204,7 +204,7 @@ class AdmittanceControl(object):
         if hasattr(self, "_current_selec"):
             self._tracer.add (self._current_selec.name + ".sout", "_measured_current")
 
-        robot.device.after.addSignal(self._tracer.name + ".triger")
+        robot.integrator.after.addSignal(self._tracer.name + ".triger")
         return self._tracer
 
     @property

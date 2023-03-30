@@ -49,6 +49,8 @@ class Supervisor(object):
     5. Gp <-> G
     """
 
+    ## Unit of time of SoT signals (microsecond)
+    signal_dt = 1e-6
     ##
     # \param lpTasks list of low priority tasks. If None, a Posture task will be used.
     # \param hpTasks list of high priority tasks (like balance)
@@ -63,12 +65,13 @@ class Supervisor(object):
         self.currentSot = None
         from dynamic_graph.sot.core.switch import SwitchVector
         self.sot_switch = SwitchVector ("sot_supervisor_switch")
-        plug(self.sot_switch.sout, self.sotrobot.device.control)
+        plug(self.sot_switch.sout, self.sotrobot.integrator.signal("velocity"))
 
         from agimus_sot.events import Events
         self. done_events = Events ("done" , sotrobot)
         self.error_events = Events ("error", sotrobot)
-        self. done_events.setupNormOfControl (sotrobot.device.control, 1e-2)
+        self. done_events.setupNormOfControl (sotrobot.integrator.signal(
+            "velocity"), 1e-2)
         self. done_events.setupTime () # For signal self. done_events.timeEllapsedSignal
         self.error_events.setupTime () # For signal self.error_events.timeEllapsedSignal
 
@@ -79,7 +82,8 @@ class Supervisor(object):
 
         self.keep_posture = Posture ("posture_keep", self.sotrobot)
         self.keep_posture._task.setWithDerivative (False)
-        self.keep_posture._signalPositionRef().value = self.sotrobot.dynamic.position.value
+        self.keep_posture._signalPositionRef().value =\
+            self.sotrobot.integrator.signal("configuration").value
 
         self.keep_posture.pushTo(sot)
         sot. doneSignal = self.done_events.controlNormSignal
@@ -90,21 +94,14 @@ class Supervisor(object):
     # \param basePose a list: [x,y,z,r,p,y] or [x,y,z,qx,qy,qz,qw]
     # \return success True in case of success
     def setBasePose (self, basePose):
-        if len(basePose) == 7:
-            # Currently, this case never happens
-            from dynamic_graph.sot.tools.quaternion import Quaternion
-            from numpy.linalg import norm
-            q = Quaternion(basePose[6],basePose[3],basePose[4],basePose[5])
-            if abs(norm(q.array) - 1.) > 1e-2:
-              return False, "Quaternion is not normalized"
-            basePose = basePose[:3] + q.toRPY().tolist()
-        if self.currentSot == "" or len(basePose) != 6:
+        assert(len(basePose) == 7)
+        if self.currentSot == "":
             # We are using the SOT to keep the current posture.
             # The 6 first DoF are not used by the task so we can change them safely.
-            q = self.sotrobot.device.state.value
-            q[:6] = basePose
-            self.sotrobot.device.set(q)
-            self.keep_posture._signalPositionRef().value = self.sotrobot.device.state.value
+            q = self.sotrobot.integrator.signal("configuration").value
+            q[:7] = basePose
+            self.sotrobot.integrator.setInitialConfig(q)
+            self.keep_posture._signalPositionRef().value = q
             return True
         else:
             return False
@@ -219,15 +216,14 @@ class Supervisor(object):
     # \param timeout time in seconds after which to return a failure.
     # \return True on success, False on timeout.
     def waitForQueue(self, minQueueSize, timeout):
-        ts = self.sotrobot.device.getTimeStep()
-        to = int(timeout / self.sotrobot.device.getTimeStep())
+        to = int(timeout / self.signal_dt)
         from time import sleep
         start_it = self.sotrobot.device.control.time
         for queue in self.rosSubscribe.list():
             while self.rosSubscribe.queueSize(queue) < minQueueSize:
                 if self.sotrobot.device.control.time > start_it + to:
                     return False, "Queue {} has received {} points.".format(queue, self.rosSubscribe.queueSize(queue))
-                sleep(ts)
+                sleep(1e-3)
         return True, ""
     
     ## Wait for the queue to receive atleast one data point
@@ -273,7 +269,7 @@ class Supervisor(object):
         if not minSizeReached:
             print (msg)
             return False, -1
-        durationStep = int(duration / self.sotrobot.device.getTimeStep())
+        durationStep = int(duration / self.signal_dt)
         t = self.sotrobot.device.control.time + delay
         self.rosSubscribe.readQueue (t)
         self. done_events.setFutureTime (t + durationStep)
@@ -313,7 +309,7 @@ class Supervisor(object):
         # to readQueue. We expect it to happen with 1e6 milli-seconds
         # from now...
         devicetime = self.sotrobot.device.control.time
-        self. done_events.setFutureTime (devicetime + 100000)
+        self. done_events.setFutureTime (devicetime + 1000000000)
 
         res, msg = self._selectSolver (action)
         if not res:
@@ -379,9 +375,10 @@ class Supervisor(object):
         self.ros_publish_state.add ("string", "transition_name",
                                     "/agimus/sot/transition_name")
         self.ros_publish_state.signal("transition_name").value = ""
-        plug (self.sotrobot.device.state, self.ros_publish_state.signal("state"))
+        plug (self.sotrobot.integrator.signal('configuration'),
+              self.ros_publish_state.signal("state"))
         plug (self.rosSubscribe.signal("posture"), self.ros_publish_state.signal("reference_state"))
-        self.sotrobot.device.after.addDownsampledSignal ("ros_publish_state.trigger", subsampling)
+        self.sotrobot.integrator.after.addDownsampledSignal ("ros_publish_state.trigger", subsampling)
 
 def _defaultHandler(name,topic_info,rosSubscribe,rosTf):
     topic = topic_info["topic"]
