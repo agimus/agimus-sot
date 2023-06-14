@@ -379,6 +379,9 @@ class TaskFactory(ConstraintFactoryAbstract):
 # \sa manipulation.constraint_graph_factory.GraphFactoryAbstract, TaskFactory,
 #     Affordance
 class Factory(GraphFactoryAbstract):
+    ## Whether preplacement waypoint states are created when object has no
+    #  contact surface.
+    createPreplaceAnyway = False
     class State:
         def __init__ (self, tasks, grasps, factory):
             self.name = factory._stateName (grasps)
@@ -566,7 +569,6 @@ class Factory(GraphFactoryAbstract):
 
         iobj = self.objectFromHandle [st.grasps[ig]]
         obj = self.objects[iobj]
-        noPlace = self._isObjectGrasped (sf.grasps, iobj)
         #TODO compute other grasp on iobj
         # it must be a grasp or pregrasp task
         grasp = ( self.gripperFrames[self.grippers[ig]], self.handleFrames[self.handles[st.grasps[ig]]] )
@@ -575,9 +577,13 @@ class Factory(GraphFactoryAbstract):
         else:
             otherGrasp = sf.objectsAlreadyGrasped.get(obj)
 
-        if not noPlace:
-            if len(self.contactsPerObjects[iobj]) == 0 or \
-            len(self.envContacts) == 0:
+        noPlace = False
+        if self._isObjectGrasped (sf.grasps, iobj):
+            noPlace = True
+        else:
+            if not self.createPreplaceAnyway and (
+                len(self.contactsPerObjects[iobj]) == 0 or
+                    len(self.envContacts) == 0):
                 noPlace = True
         # The different cases:
         pregrasp = True
