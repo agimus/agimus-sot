@@ -11,7 +11,7 @@ namespace dg = dynamicgraph;
 BOOST_PYTHON_MODULE(wrap)
 {
   bp::import("dynamic_graph");
-  dg::python::exposeEntity<dg::agimus::Time<int> >();
+  dg::python::exposeEntity<dg::agimus::Time<dg::sigtime_t> >();
   dg::python::exposeEntity<dg::agimus::ContactAdmittance>();
   dg::python::exposeEntity<dg::agimus::SafeGainAdaptive>();
   dg::python::exposeEntity<dg::agimus::HolonomicConstraint>();

@@ -88,41 +88,41 @@ class AGIMUS_SOT_DLLAPI ContactAdmittance : public FeatureAbstract
 
   /// Constructor
   ContactAdmittance(const std::string& name);
-  virtual unsigned int &getDimension(unsigned int &res, int)
+  virtual unsigned int &getDimension(unsigned int &res, sigtime_t)
   {
     res=6;
     return res;
   }
 
   // Get wrench offset by averaging over 20 iterations
-  void getWrenchOffset(const int& time);
+  void getWrenchOffset(const sigtime_t& time);
 
  private:
   // Input signals
   // error of the feature controlling the end effector when there is no contact
-  SignalPtr<dynamicgraph::Vector, int> errorSIN;
+  SignalPtr<dynamicgraph::Vector, sigtime_t> errorSIN;
   // corresponding Jacobian
-  SignalPtr<dynamicgraph::Matrix, int> jacobianSIN;
+  SignalPtr<dynamicgraph::Matrix, sigtime_t> jacobianSIN;
   // force and momentum measured by the force sensor,
-  SignalPtr<dynamicgraph::Vector, int> wrenchSIN;
+  SignalPtr<dynamicgraph::Vector, sigtime_t> wrenchSIN;
   // Jacobian of the pose of the force sensor,
-  SignalPtr<dynamicgraph::Matrix, int> ftJacobianSIN;
+  SignalPtr<dynamicgraph::Matrix, sigtime_t> ftJacobianSIN;
   // norm of the force/moment above which the contact is considered as active
-  SignalPtr<double, int> thresholdSIN;
+  SignalPtr<double, sigtime_t> thresholdSIN;
   // desired wrench
-  SignalPtr<dynamicgraph::Vector, int> wrenchDesSIN;
+  SignalPtr<dynamicgraph::Vector, sigtime_t> wrenchDesSIN;
   // stiffness
-  SignalPtr<dynamicgraph::Matrix, int> stiffnessSIN;
+  SignalPtr<dynamicgraph::Matrix, sigtime_t> stiffnessSIN;
 
   // Output signals
   // Wrench offset corresponding to the weight of the end effector
-  Signal<dynamicgraph::Vector, int> wrenchOffsetSOUT;
+  Signal<dynamicgraph::Vector, sigtime_t> wrenchOffsetSOUT;
   // State of the contact
-  SignalTimeDependent<int, int> contactSOUT;
+  SignalTimeDependent<int, sigtime_t> contactSOUT;
   // Criterion to release contact
-  Signal<double, int> releaseCriterionSOUT;
+  Signal<double, sigtime_t> releaseCriterionSOUT;
   // Wrench minus offset
-  Signal<dynamicgraph::Vector, int> wrenchMinusOffsetSOUT;
+  Signal<dynamicgraph::Vector, sigtime_t> wrenchMinusOffsetSOUT;
 
   // \brief Counter to handle contact
   std::size_t contactCounter_;
@@ -136,14 +136,14 @@ class AGIMUS_SOT_DLLAPI ContactAdmittance : public FeatureAbstract
 
   // \brief Compute the error
   virtual dynamicgraph::Vector& computeError(dynamicgraph::Vector &res,
-                                             int time);
+                                             sigtime_t time);
 
   // \brief Compute the Jacobian of the error according the robot state.
   virtual dynamicgraph::Matrix& computeJacobian(dynamicgraph::Matrix &res,
-                                                int time);
+                                                sigtime_t time);
 
   // Compute whether a contact is detected
-  int& computeContact(int& res, int time);
+  int& computeContact(int& res, sigtime_t time);
   void addCommands();
   DECLARE_NO_REFERENCE;
   }; // class ContactAdmittance

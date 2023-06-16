@@ -90,7 +90,7 @@ ObjectLocalization::ObjectLocalization(const std::string& name) :
   Entity::signalRegistration(doneSOUT);
 }
 
-void ObjectLocalization::trigger(const int& t)
+void ObjectLocalization::trigger(const sigtime_t& t)
 {
   doneSOUT.setConstant(false);
   cMoAvailableSIN.recompute(t);
@@ -108,7 +108,7 @@ void ObjectLocalization::trigger(const int& t)
 }
 
 MatrixHomogeneous& ObjectLocalization::compute_cMo
-(MatrixHomogeneous& res, int t)
+(MatrixHomogeneous& res, sigtime_t t)
 {
   if(visualServoingMode_){
     trigger(t);

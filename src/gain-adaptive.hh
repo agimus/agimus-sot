@@ -72,11 +72,11 @@ public: /* --- CONSTRUCTORS ---- */
                          const double &errNormOfHalfHyp);
 
 public: /* --- SIGNALS --- */
-  SignalPtr<Vector, int> errorSIN;
-  SignalTimeDependent<double, int> gainSOUT;
+  SignalPtr<Vector, sigtime_t> errorSIN;
+  SignalTimeDependent<double, sigtime_t> gainSOUT;
 
 protected:
-  double &computeGain(double &res, int t);
+  double &computeGain(double &res, sigtime_t t);
 
 private:
   void addCommands();

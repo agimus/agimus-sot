@@ -35,7 +35,7 @@
 namespace dynamicgraph {
   namespace agimus {
       /// Delay
-      template <typename Value, typename Time = int>
+      template <typename Value, typename Time = sigtime_t>
       class AGIMUS_SOT_DLLAPI Delay : public dynamicgraph::Entity
       {
         DYNAMIC_GRAPH_ENTITY_DECL();
@@ -94,7 +94,7 @@ namespace dynamicgraph {
         Signal <Value, Time> currentOUT, previousOUT;
       };
 
-      typedef Delay<Vector,int> DelayVector;
+      typedef Delay<Vector,sigtime_t> DelayVector;
       template<>
       DYNAMICGRAPH_FACTORY_ENTITY_PLUGIN (DelayVector, "DelayVector");
   } // namespace agimus

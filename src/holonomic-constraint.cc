@@ -79,7 +79,8 @@ namespace dynamicgraph {
             (*this, &HolonomicConstraint::setNumberDoF, docstring));
       }
 
-      Vector& HolonomicConstraint::computeError (Vector& error, const int& time)
+      Vector& HolonomicConstraint::computeError (Vector& error,
+                                                 const sigtime_t& time)
       {
         const MatrixHomogeneous& oMp  = positionSIN   .access (time);
         const MatrixHomogeneous& oMpr = positionRefSIN.access (time);
@@ -94,7 +95,8 @@ namespace dynamicgraph {
         return error;
       }
 
-      Vector& HolonomicConstraint::computeControl   (Vector& control  , const int& time)
+      Vector& HolonomicConstraint::computeControl   (Vector& control,
+                                                     const sigtime_t& time)
       {
         const Vector& vr = velocityRefSIN.access (time);
         const MatrixHomogeneous& oMp  = positionSIN   .access (time);
@@ -111,7 +113,8 @@ namespace dynamicgraph {
         return control;
       }
 
-      Matrix& HolonomicConstraint::computeProjector (Matrix& projector, const int& )
+      Matrix& HolonomicConstraint::computeProjector (Matrix& projector,
+                                                     const sigtime_t& )
       {
         projector.resize(6, dim_);
         projector.leftCols<6>().setIdentity();

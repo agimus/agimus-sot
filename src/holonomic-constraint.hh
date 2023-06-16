@@ -61,23 +61,23 @@ namespace dynamicgraph {
         { dim_ = d; }
 
         private:
-        Vector& computeError     (Vector& error    , const int& time);
-        Vector& computeControl   (Vector& control  , const int& time);
-        Matrix& computeProjector (Matrix& projector, const int& time);
+        Vector& computeError     (Vector& error    , const sigtime_t& time);
+        Vector& computeControl   (Vector& control  , const sigtime_t& time);
+        Matrix& computeProjector (Matrix& projector, const sigtime_t& time);
 
         unsigned int dim_;
 
-        SignalPtr <double, int> g1SIN;
-        SignalPtr <double, int> g2SIN;
-        SignalPtr <double, int> g3SIN;
+        SignalPtr <double, sigtime_t> g1SIN;
+        SignalPtr <double, sigtime_t> g2SIN;
+        SignalPtr <double, sigtime_t> g3SIN;
 
-        SignalPtr <sot::MatrixHomogeneous, int> positionSIN;
-        SignalPtr <sot::MatrixHomogeneous, int> positionRefSIN;
-        SignalPtr <Vector, int> velocityRefSIN;
+        SignalPtr <sot::MatrixHomogeneous, sigtime_t> positionSIN;
+        SignalPtr <sot::MatrixHomogeneous, sigtime_t> positionRefSIN;
+        SignalPtr <Vector, sigtime_t> velocityRefSIN;
 
-        Signal <Vector, int> errorSOUT;
-        Signal <Vector, int> controlSOUT;
-        Signal <Matrix, int> projectorSOUT;
+        Signal <Vector, sigtime_t> errorSOUT;
+        Signal <Vector, sigtime_t> controlSOUT;
+        Signal <Matrix, sigtime_t> projectorSOUT;
       };
   } // namespace agimus
 } // namespace dynamicgraph

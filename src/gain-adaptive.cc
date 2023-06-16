@@ -85,7 +85,7 @@ void SafeGainAdaptive::display(std::ostream &os) const
   os << " (" << cs.transpose() << ") ";
 }
 
-double &SafeGainAdaptive::computeGain(double &res, int t)
+double &SafeGainAdaptive::computeGain(double &res, sigtime_t t)
 {
   const dynamicgraph::Vector &error = errorSIN(t);
   const double norm = error.norm();

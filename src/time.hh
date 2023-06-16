@@ -35,7 +35,7 @@
 namespace dynamicgraph {
   namespace agimus {
       /// Time
-      template <typename TimeT = int>
+      template <typename TimeT>
       class AGIMUS_SOT_DLLAPI Time : public dynamicgraph::Entity
       {
         DYNAMIC_GRAPH_ENTITY_DECL();
@@ -44,7 +44,7 @@ namespace dynamicgraph {
         Time (const std::string& name) :
           Entity (name),
           time (0),
-          cur ("Time("+name+")::output(int)::now"),
+          cur ("Time("+name+")::output("+typename_+")::now"),
           sup ("Time("+name+")::output(bool)::after"),
           inf ("Time("+name+")::output(bool)::before")
         {
@@ -78,13 +78,22 @@ namespace dynamicgraph {
         void setTime (const TimeT& t) { time = t; }
 
         private:
-        TimeT& now (TimeT& res, const TimeT& t) { res =  t        ; return res; }
-        bool & aft (bool & res, const TimeT& t) { res = (t > time); return res; }
-        bool & bef (bool & res, const TimeT& t) { res = (t < time); return res; }
+        TimeT& now(TimeT& res, const sigtime_t& t) {
+          res =  t;
+          return res;
+        }
+        bool & aft(bool & res, const sigtime_t& t) {
+          res = (t > time);
+          return res;
+        }
+        bool & bef(bool & res, const sigtime_t& t) {
+          res = (t < time); return res;
+        }
 
         TimeT time;
-        Signal <TimeT, TimeT> cur;
-        Signal <bool, TimeT> sup, inf;
+        Signal <TimeT, sigtime_t> cur;
+        Signal <bool, sigtime_t> sup, inf;
+        static std::string typename_;
       };
   } // namespace agimus
 } // namespace dynamicgraph

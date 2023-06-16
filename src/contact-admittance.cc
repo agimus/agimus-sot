@@ -88,7 +88,7 @@ ContactAdmittance::ContactAdmittance(const std::string& name) :
   wrenchOffsetSOUT.setConstant(offset);
 }
 
-void ContactAdmittance::getWrenchOffset(const int& time)
+void ContactAdmittance::getWrenchOffset(const sigtime_t& time)
 {
   wrenchOffsetSOUT.setConstant(wrenchSIN(time));
   // Reset contact state since norm of force may have been above the threshold
@@ -97,7 +97,7 @@ void ContactAdmittance::getWrenchOffset(const int& time)
 }
 
 vector_t& ContactAdmittance::computeError
-(vector_t &res, int time)
+(vector_t &res, sigtime_t time)
 {
   ContactState contact((ContactState)contactSOUT(time));
   if (contact == NO_CONTACT || contact == GOING_TO_CONTACT){
@@ -112,7 +112,7 @@ vector_t& ContactAdmittance::computeError
 }
 
 dynamicgraph::Matrix& ContactAdmittance::computeJacobian
-(dynamicgraph::Matrix &res, int time)
+(dynamicgraph::Matrix &res, sigtime_t time)
 {
   int contact(contactSOUT(time));
   if (contact == NO_CONTACT || contact == GOING_TO_CONTACT){
@@ -123,7 +123,7 @@ dynamicgraph::Matrix& ContactAdmittance::computeJacobian
   return res;
 }
 
-int& ContactAdmittance::computeContact(int& res, int time)
+int& ContactAdmittance::computeContact(int& res, sigtime_t time)
 {
   vector_t w(wrenchSIN(time)-wrenchOffsetSOUT(time));
   // Compute state of contact

@@ -78,7 +78,7 @@ class Events:
         self.ros_publish = RosPublish (name + '_ros_publish')
         # self.ros_publish.add ('boolean', name, '/agimus/sot/event/' + name)
         # self.ros_publish.signal(name).value = int(True)
-        self.ros_publish.add ('int', name, '/agimus/sot/event/' + name)
+        self.ros_publish.add ('int64', name, '/agimus/sot/event/' + name)
 
         self.event.addSignal (name + "_ros_publish.trigger")
         self.switch_string = {}

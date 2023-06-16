@@ -79,17 +79,17 @@ class AGIMUS_SOT_DLLAPI ObjectLocalization : public Entity
   ObjectLocalization(const std::string& name);
 
   // Signals
-  SignalPtr<MatrixHomogeneous, int> cMoMeasuredSIN;
-  SignalPtr<bool, int> cMoAvailableSIN;
-  SignalPtr<MatrixHomogeneous, int> wMcSIN;
+  SignalPtr<MatrixHomogeneous, sigtime_t> cMoMeasuredSIN;
+  SignalPtr<bool, sigtime_t> cMoAvailableSIN;
+  SignalPtr<MatrixHomogeneous, sigtime_t> wMcSIN;
 
-  Signal<MatrixHomogeneous, int> wMoSOUT;
-  SignalTimeDependent<MatrixHomogeneous, int> cMoSOUT;
-  Signal<bool, int> doneSOUT;
+  Signal<MatrixHomogeneous, sigtime_t> wMoSOUT;
+  SignalTimeDependent<MatrixHomogeneous, sigtime_t> cMoSOUT;
+  Signal<bool, sigtime_t> doneSOUT;
  private:
   void addCommands();
-  MatrixHomogeneous& compute_cMo(MatrixHomogeneous& res, int t);
-  void trigger(const int&);
+  MatrixHomogeneous& compute_cMo(MatrixHomogeneous& res, sigtime_t t);
+  void trigger(const sigtime_t&);
   void setVisualServoingMode(const bool& visualServoing){
     visualServoingMode_ = visualServoing;
   }
