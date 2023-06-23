@@ -80,7 +80,7 @@ void SafeGainAdaptive::display(std::ostream &os) const
   os << "Gain Adaptative " << getName();
   try {
     os << " = " << double(gainSOUT.accessCopy());
-  } catch (ExceptionSignal e) {
+  } catch (const ExceptionSignal& e) {
   }
   os << " (" << cs.transpose() << ") ";
 }

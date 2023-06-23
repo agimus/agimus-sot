@@ -71,6 +71,7 @@ typedef dynamicgraph::Matrix matrix_t;
 /// The contact is considered as active if the norm of the wrench is above
 /// the threshold for several iterations in a row.
 using dynamicgraph::sot::FeatureAbstract;
+  using  dynamicgraph::size_type;
   
 class AGIMUS_SOT_DLLAPI ContactAdmittance : public FeatureAbstract
 {
@@ -88,7 +89,7 @@ class AGIMUS_SOT_DLLAPI ContactAdmittance : public FeatureAbstract
 
   /// Constructor
   ContactAdmittance(const std::string& name);
-  virtual unsigned int &getDimension(unsigned int &res, sigtime_t)
+  virtual size_type &getDimension(size_type &res, sigtime_t)
   {
     res=6;
     return res;
