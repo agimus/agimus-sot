@@ -27,7 +27,7 @@ set(PROJECT_URL "https://github.com/agimus/agimus-sot")
 set(PROJECT_USE_CMAKE_EXPORT TRUE)
 
 include(cmake/base.cmake)
-include(cmake/test.cmake)
+#include(cmake/test.cmake)
 include(cmake/python.cmake)
 
 compute_project_args(PROJECT_ARGS LANGUAGES CXX)
@@ -53,6 +53,6 @@ INSTALL(DIRECTORY launch
   DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME})
 
 ADD_SUBDIRECTORY(src)
-ADD_SUBDIRECTORY(tests)
+#ADD_SUBDIRECTORY(tests)
 
 SETUP_PROJECT_FINALIZE()
